@@ -39,9 +39,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
     }
   }
 
-  void _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  void _pickImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
@@ -82,49 +81,145 @@ class _AddItemScreenState extends State<AddItemScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.item == null ? 'Tambah Barang' : 'Edit Barang'),
+        title: Text(
+          widget.item == null ? 'Tambah Barang' : 'Edit Barang',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextFormField(
-                initialValue: _name,
-                decoration: InputDecoration(labelText: 'Nama Barang'),
-                onSaved: (value) => _name = value!,
-                validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
-              ),
-              TextFormField(
-                initialValue: _description,
-                decoration: InputDecoration(labelText: 'Deskripsi'),
-                onSaved: (value) => _description = value!,
-              ),
-              TextFormField(
-                initialValue: _category,
-                decoration: InputDecoration(labelText: 'Kategori'),
-                onSaved: (value) => _category = value!,
-              ),
-              TextFormField(
-                initialValue: _price == 0 ? '' : _numberFormat.format(_price),
-                decoration: InputDecoration(labelText: 'Harga'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) =>
-                    _price = double.parse(value!.replaceAll('.', '')),
-                validator: (value) =>
-                    value!.isEmpty ? 'Harga tidak boleh kosong' : null,
-              ),
-              _imageFile == null
-                  ? TextButton(
-                      onPressed: _pickImage,
-                      child: Text('Pilih Gambar'),
-                    )
-                  : Image.file(_imageFile!, height: 200),
-              ElevatedButton(
-                onPressed: _saveItem,
-                child: Text('Simpan'),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Column(
+                  children: [
+                    _imageFile == null
+                        ? Container(
+                            height: 200,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(
+                              Icons.image,
+                              color: Colors.grey[700],
+                              size: 50,
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              _imageFile!,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.gallery),
+                          icon: Icon(Icons.photo_library, color: Colors.white),
+                          label: Text('Galeri',
+                              style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.camera),
+                          icon: Icon(Icons.camera_alt, color: Colors.white),
+                          label: Text('Kamera',
+                              style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 32),
+                TextFormField(
+                  initialValue: _name,
+                  decoration: InputDecoration(
+                    labelText: 'Nama Barang',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onSaved: (value) => _name = value!,
+                  validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  initialValue: _description,
+                  decoration: InputDecoration(
+                    labelText: 'Deskripsi',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onSaved: (value) => _description = value!,
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  initialValue: _category,
+                  decoration: InputDecoration(
+                    labelText: 'Kategori',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onSaved: (value) => _category = value!,
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  initialValue: _price == 0 ? '' : _numberFormat.format(_price),
+                  decoration: InputDecoration(
+                    labelText: 'Harga',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onSaved: (value) =>
+                      _price = double.parse(value!.replaceAll('.', '')),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Harga tidak boleh kosong' : null,
+                ),
+                SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: _saveItem,
+                  child: Text(
+                    'Simpan',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

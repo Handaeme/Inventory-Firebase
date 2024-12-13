@@ -37,27 +37,41 @@ class _ItemListScreenState extends State<ItemListScreen> {
       appBar: AppBar(
         title: Text(
           'Daftar Barang',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blueAccent, Colors.lightBlue],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       body: _items.isEmpty
           ? Center(
-              child: Text(
-                'Belum ada barang',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.inbox,
+                    size: 80,
+                    color: Colors.grey[400],
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Belum ada barang',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
+                ],
               ),
             )
           : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.75,
-                ),
+              padding: const EdgeInsets.all(12.0),
+              child: ListView.builder(
                 itemCount: _items.length,
                 itemBuilder: (context, index) {
                   final item = _items[index];
@@ -70,54 +84,71 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     ).then((_) => _loadItems()),
                     child: Card(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      elevation: 5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(15),
-                              ),
+                      elevation: 8,
+                      shadowColor: Colors.blueAccent.withOpacity(0.4),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
                               child: Image.file(
                                 File(item.imagePath),
-                                width: double.infinity,
+                                width: 80,
+                                height: 80,
                                 fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.name,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.name,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  'Stok: ${item.stock}',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey),
-                                ),
-                                Text(
-                                  'Harga: ${_currencyFormat.format(item.price)}',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey),
-                                ),
-                              ],
+                                  SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.inventory,
+                                          color: Colors.grey, size: 20),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Stok: ${item.stock}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.monetization_on,
+                                          color: Colors.green, size: 20),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Harga: ${_currencyFormat.format(item.price)}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: IconButton(
+                            IconButton(
                               icon: Icon(Icons.edit, color: Colors.blueAccent),
                               onPressed: () => Navigator.push(
                                 context,
@@ -127,8 +158,8 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                 ),
                               ).then((_) => _loadItems()),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -140,7 +171,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
           context,
           MaterialPageRoute(builder: (context) => AddItemScreen()),
         ).then((_) => _loadItems()),
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.blueAccent,
       ),
     );
