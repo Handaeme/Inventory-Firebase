@@ -35,42 +35,105 @@ class _ItemListScreenState extends State<ItemListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Daftar Barang'),
+        title: Text(
+          'Daftar Barang',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
       ),
       body: _items.isEmpty
-          ? Center(child: Text('Belum ada barang'))
-          : ListView.builder(
-              itemCount: _items.length,
-              itemBuilder: (context, index) {
-                final item = _items[index];
-                return ListTile(
-                  leading: Image.file(
-                    File(item.imagePath),
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(item.name),
-                  subtitle: Text(
-                    'Stok: ${item.stock} | Harga: ${_currencyFormat.format(item.price)}',
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => Navigator.push(
+          ? Center(
+              child: Text(
+                'Belum ada barang',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: _items.length,
+                itemBuilder: (context, index) {
+                  final item = _items[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AddItemScreen(item: item),
+                        builder: (context) => ItemDetailScreen(item: item),
                       ),
                     ).then((_) => _loadItems()),
-                  ),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ItemDetailScreen(item: item),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(15),
+                              ),
+                              child: Image.file(
+                                File(item.imagePath),
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Stok: ${item.stock}',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
+                                ),
+                                Text(
+                                  'Harga: ${_currencyFormat.format(item.price)}',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                              icon: Icon(Icons.edit, color: Colors.blueAccent),
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddItemScreen(item: item),
+                                ),
+                              ).then((_) => _loadItems()),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ).then((_) => _loadItems()),
-                );
-              },
+                  );
+                },
+              ),
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(
@@ -78,6 +141,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
           MaterialPageRoute(builder: (context) => AddItemScreen()),
         ).then((_) => _loadItems()),
         child: Icon(Icons.add),
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }

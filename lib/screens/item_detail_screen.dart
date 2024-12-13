@@ -81,7 +81,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                         AddTransactionScreen(item: widget.item),
                   ),
                 ).then((_) {
-                  _loadTransactions(); 
+                  _loadTransactions();
                 });
               },
               child: Text('Tambah Riwayat Transaksi'),
