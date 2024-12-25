@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:inventory_sqlite/database/database_helper.dart';
 
 import '../models/item.dart';
 import '../models/transaction.dart';
@@ -16,11 +16,18 @@ class AddTransactionScreen extends StatefulWidget {
 
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
-  final DatabaseHelper _dbHelper = DatabaseHelper();
   String _type = 'Masuk';
   int _quantity = 0;
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   void _saveTransaction(BuildContext context) async {
+    if (_type == 'Keluar' && widget.item.stock < _quantity) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Stok tidak mencukupi untuk transaksi Keluar')));
+      return;
+    }
+
     final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final transaction = ItemTransaction(
       itemId: widget.item.id!,
@@ -29,12 +36,22 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       date: date,
     );
 
-    await _dbHelper.insertTransaction(transaction);
-    final newStock = _type == 'Masuk'
-        ? widget.item.stock + _quantity
-        : widget.item.stock - _quantity;
-    await _dbHelper.updateItemStock(widget.item.id!, newStock);
-    Navigator.pop(context);
+    try {
+      await _firestore.collection('transactions').add(transaction.toMap());
+
+      await _firestore.collection('items').doc(widget.item.id).update({
+        'stock':
+            FieldValue.increment(_type == 'Masuk' ? _quantity : -_quantity),
+      });
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Transaksi berhasil disimpan')));
+
+      Navigator.pop(context); // Kembali setelah menyimpan transaksi
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal menyimpan transaksi: $e')));
+    }
   }
 
   @override

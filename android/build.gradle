@@ -1,3 +1,16 @@
+buildscript {
+    ext.kotlin_version = '1.8.20'  // Versi Kotlin yang kompatibel
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.0.4'  // AGP yang kompatibel dengan Gradle 7.4
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" 
+        classpath 'com.google.gms:google-services:4.3.15' // Menggunakan versi Kotlin yang didefinisikan
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -9,6 +22,7 @@ rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }

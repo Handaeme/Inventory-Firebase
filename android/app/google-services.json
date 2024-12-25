@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "947453717293",
+    "project_id": "mobile-inventory-system-1dbec",
+    "storage_bucket": "mobile-inventory-system-1dbec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947453717293:android:ff55e3a00a8f23b59101a4",
+        "android_client_info": {
+          "package_name": "com.example.inventory_sqlite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmW1Iq58hGZkhngtHXiM4UV-FkOFRlpnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
